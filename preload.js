@@ -1,8 +1,11 @@
 const QRCode = require('qrcode')
 const { getSubnetIP, findNextAvailablePort } = require("./networkingInfo");
-const { startLimidiServer } = require("./limidiServer");
 
-const PORT = process.env.PORT || 4848
+const useExpress = false 
+
+const { startLimidiServer } = require(useExpress ?"./limidiServer":"./limidiServerWindows");
+
+
 
 window.addEventListener('DOMContentLoaded', async () => {
     const ip = getSubnetIP()
