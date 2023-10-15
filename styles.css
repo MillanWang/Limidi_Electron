@@ -1,7 +1,10 @@
 body {
     background-color: aqua;
+    min-width: 100px;
+    min-height: 100px;
 }
 
 .main {
     text-align: center;
+    font-family: Arial, Helvetica, sans-serif
 }
