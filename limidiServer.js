@@ -32,7 +32,6 @@ function startLimidiServer(port) {
 function setupEndpoints() {
     app.get("/Heartbeat", (req, res) => {
         res.send(`Heartbeat at:  ${Date.now()}`);
-        closeLimidiServer();
     });
 
     app.get("/MidiNote", (req, res) => {
