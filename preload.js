@@ -1,26 +1,60 @@
 const QRCode = require("qrcode");
 const { getSubnetIP, findNextAvailablePort } = require("./networkingInfo");
 
-const { startLimidiServer } = require("./limidiServer");
+const { startLimidiServer, closeLimidiServer } = require("./limidiServer");
 
-window.addEventListener("DOMContentLoaded", async () => {
-    const ip = getSubnetIP();
-    const port = await findNextAvailablePort(4848, 5050);
-    const baseAddress = `${ip}:${port}`;
+const onContentLoaded = async () => {
+  const { ip, port } = await tryGetServerInfo();
+  if (!ip || !port) {
+    setOfflineMessage();
+    return;
+  }
+  onOnlineHandler();
+};
 
-    startLimidiServer(port);
-    replaceElementText(`ip-address`, baseAddress);
-    setQrCode(baseAddress);
-});
+const onOnlineHandler = async () => {
+  const { ip, port } = await tryGetServerInfo();
+  const baseAddress = `${ip}:${port}`;
+
+  startLimidiServer(port);
+  replaceElementText(`ip-address`, `IP Address: ${baseAddress}`);
+  setQrCode(baseAddress);
+};
+
+const onOfflineHandler = async () => {
+  closeLimidiServer();
+  setQrCode("");
+  setOfflineMessage();
+};
+
+const setOfflineMessage = () => {
+  replaceElementText(`ip-address`, "No internet connection");
+};
+
+const tryGetServerInfo = async () => {
+  return {
+    ip: getSubnetIP(),
+    port: await findNextAvailablePort(4848, 5050),
+  };
+};
 
 function replaceElementText(selector, text) {
-    const element = document.getElementById(selector);
-    if (element) element.innerText = text;
+  const element = document.getElementById(selector);
+  if (element) element.innerText = text;
 }
 
 function setQrCode(codeContent) {
-    const canvas = document.getElementById("canvas");
+  const canvas = document.getElementById("canvas");
+  if (codeContent) {
+    canvas.removeAttribute("hidden");
     QRCode.toCanvas(canvas, codeContent, function (error) {
-        if (error) replaceElementText("qr-error", "Could not generate QR code");
+      if (error) replaceElementText("qr-error", "Could not generate QR code");
     });
+  } else {
+    canvas.setAttribute("hidden", true);
+  }
 }
+
+window.addEventListener("DOMContentLoaded", onContentLoaded);
+window.addEventListener("online", onOnlineHandler);
+window.addEventListener("offline", onOfflineHandler);
