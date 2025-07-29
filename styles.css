@@ -1,14 +1,14 @@
 body {
-    background-color: #222f3e;
-    min-width: 100px;
-    min-height: 100px;
+  background-color: #222f3e;
+  min-width: 100px;
+  min-height: 100px;
 }
 
 .main {
-    text-align: center;
-    font-family: Arial, Helvetica, sans-serif
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .text {
-    color: #ffffff
+  color: #ffffff;
 }
