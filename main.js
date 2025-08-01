@@ -4,10 +4,12 @@ const path = require("node:path");
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    maxWidth: 800,
-    maxHeight: 600,
-    minWidth: 400,
-    minHeight: 400,
+    width: 400,
+    height: 400,
+    resizable: false,
+    maximizable: false,
+    minimizable: false,
+    fullscreenable: false,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
