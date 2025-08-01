@@ -1,5 +1,6 @@
 const QRCode = require("qrcode");
 const { getSubnetIP, findNextAvailablePort } = require("./networkingInfo");
+const { replaceElementText } = require("./utils");
 
 const { startLimidiServer, closeLimidiServer } = require("./limidiServer");
 
@@ -37,11 +38,6 @@ const tryGetServerInfo = async () => {
     port: await findNextAvailablePort(4848, 5050),
   };
 };
-
-function replaceElementText(selector, text) {
-  const element = document.getElementById(selector);
-  if (element) element.innerText = text;
-}
 
 function setQrCode(codeContent) {
   const canvas = document.getElementById("canvas");

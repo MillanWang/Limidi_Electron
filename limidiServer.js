@@ -1,5 +1,6 @@
 const express = require("express");
 const { Output, Input, getInputs, getOutputs } = require("easymidi");
+const { replaceElementText } = require("./utils");
 
 const Proto = require("./proto_bundle"); // or import if using ES modules
 const { WrapperMessage } = Proto;
@@ -13,7 +14,7 @@ const wss = new WebSocket.Server({ server }); // Attach WebSocket server to it
 
 // WebSocket connection handling
 wss.on("connection", (ws) => {
-  console.log("New WebSocket connection");
+  replaceElementText("connection-status", "Connected");
 
   ws.on("message", (message) => {
     const buffer = new Uint8Array(message);
@@ -28,6 +29,11 @@ wss.on("connection", (ws) => {
     }
 
     ws.send(`Echo: ${message}`);
+  });
+
+  ws.on("close", () => {
+    console.log("WebSocket connection closed");
+    replaceElementText("connection-status", "Disconnected");
   });
 
   ws.send("Limidi Desktop connected");
