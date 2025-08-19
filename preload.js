@@ -1,6 +1,7 @@
 const QRCode = require("qrcode");
 const { getSubnetIP, findNextAvailablePort } = require("./networkingInfo");
 const { replaceElementText } = require("./utils");
+const { encodeIpPort } = require("./ipEncoding");
 
 const { startLimidiServer, closeLimidiServer } = require("./limidiServer");
 
@@ -16,9 +17,10 @@ const onContentLoaded = async () => {
 const onOnlineHandler = async () => {
   const { ip, port } = await tryGetServerInfo();
   const baseAddress = `${ip}:${port}`;
+  const encodedAddress = encodeIpPort(baseAddress);
 
   startLimidiServer(port);
-  replaceElementText(`ip-address`, `IP Address: ${baseAddress}`);
+  replaceElementText(`connection-code`, `Code: ${encodedAddress}`);
   setQrCode(baseAddress);
 };
 
@@ -29,7 +31,7 @@ const onOfflineHandler = async () => {
 };
 
 const setOfflineMessage = () => {
-  replaceElementText(`ip-address`, "No internet connection");
+  replaceElementText(`connection-code`, "No internet connection");
 };
 
 const tryGetServerInfo = async () => {
