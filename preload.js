@@ -2,10 +2,27 @@ const QRCode = require("qrcode");
 const { getSubnetIP, findNextAvailablePort } = require("./networkingInfo");
 const { replaceElementText } = require("./utils");
 const { encodeIpPort } = require("./ipEncoding");
+const { ipcRenderer } = require("electron");
 
 const { startLimidiServer, closeLimidiServer } = require("./limidiServer");
 
+window.restartApp = () => {
+  ipcRenderer.send("restart-app");
+};
+
+const setupRestartButton = () => {
+  const restartButton = document.getElementById("restart-button");
+  if (restartButton) {
+    restartButton.addEventListener("click", () => {
+      if (window.restartApp) {
+        window.restartApp();
+      }
+    });
+  }
+};
+
 const onContentLoaded = async () => {
+  setupRestartButton();
   const { ip, port } = await tryGetServerInfo();
   if (!ip || !port) {
     setOfflineMessage();
