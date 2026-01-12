@@ -10,20 +10,23 @@
       content="default-src 'self'; script-src 'self'"
     />
     <link rel="stylesheet" type="text/css" href="styles.css" />
-    <title>Limidi Desktop</title>
+    <title>Limidi</title>
   </head>
 
   <body>
     <div class="main">
-      <h1 class="text">Limidi Desktop</h1>
+      <h1 class="text">Limidi</h1>
       <p class="text">
         <span id="connection-code"></span>
       </p>
       <canvas id="canvas"></canvas>
       <span class="text" id="qr-error"></span>
-      <p class="text">
-        <span id="connection-status"></span>
-      </p>
+
+      <div class="connection-indicator">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="connection-status">Waiting for connection...</span>
+      </div>
+
       <button id="restart-button" class="restart-button">Restart</button>
     </div>
   </body>
