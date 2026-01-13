@@ -12,11 +12,20 @@ const app = express();
 const server = http.createServer(app); // Create HTTP server from Express app
 const wss = new WebSocket.Server({ server }); // Attach WebSocket server to it
 
+// Track active connections to prevent UI state collisions
+const activeConnections = new Set();
+
 // WebSocket connection handling
 wss.on("connection", (ws) => {
-  replaceElementText("connection-status", "Connected");
-  setElementClass("status-dot", "connected", true);
-  setElementClass("status-dot", "disconnected", false);
+  // Add this connection to the active set
+  activeConnections.add(ws);
+
+  // Update UI to Connected if this is the first connection
+  if (activeConnections.size === 1) {
+    replaceElementText("connection-status", "Connected");
+    setElementClass("status-dot", "connected", true);
+    setElementClass("status-dot", "disconnected", false);
+  }
 
   ws.on("message", (message) => {
     const buffer = new Uint8Array(message);
@@ -35,9 +44,15 @@ wss.on("connection", (ws) => {
 
   ws.on("close", () => {
     console.log("WebSocket connection closed");
-    replaceElementText("connection-status", "Disconnected");
-    setElementClass("status-dot", "connected", false);
-    setElementClass("status-dot", "disconnected", true);
+    // Remove this connection from the active set
+    activeConnections.delete(ws);
+
+    // Only set UI to Disconnected if this was the last active connection
+    if (activeConnections.size === 0) {
+      replaceElementText("connection-status", "Disconnected");
+      setElementClass("status-dot", "connected", false);
+      setElementClass("status-dot", "disconnected", true);
+    }
   });
 
   ws.send("Limidi Desktop connected");
