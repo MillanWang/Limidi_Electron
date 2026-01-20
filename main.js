@@ -10,6 +10,7 @@ const createWindow = () => {
     maximizable: false,
     minimizable: false,
     fullscreenable: false,
+    icon: path.join(__dirname, "assets", "icons", "512x512.png"), // Icon for Linux and window
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,

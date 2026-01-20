@@ -1,5 +1,5 @@
 body {
-  background-color: #222f3e;
+  background-color: #232323;
   min-width: 100px;
   min-height: 100px;
 }
@@ -13,7 +13,7 @@ body {
 }
 
 .text {
-  color: #ffffff;
+  color: #eeeeee;
 }
 
 /* Connection status indicator */

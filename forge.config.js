@@ -5,7 +5,7 @@ module.exports = {
     executableName: "limidi",
     appBundleId: "com.limidi.electron",
     appVersion: "1.0.0",
-    icon: undefined, // Add path to .ico/.icns/.png icon if you have one
+    icon: "./assets/icons/icon", // Electron Forge will look for icon.ico (Windows) or icon.icns (macOS)
   },
   rebuildConfig: {},
   makers: [
@@ -25,6 +25,7 @@ module.exports = {
         options: {
           maintainer: "Millan Wang",
           homepage: "https://github.com/yourusername/limidi-electron",
+          icon: "./assets/icons/512x512.png", // Linux requires PNG
         },
       },
     },
@@ -34,6 +35,7 @@ module.exports = {
         options: {
           maintainer: "Millan Wang",
           homepage: "https://github.com/yourusername/limidi-electron",
+          icon: "./assets/icons/512x512.png", // Linux requires PNG
         },
       },
     },
