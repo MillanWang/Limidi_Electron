@@ -11,7 +11,7 @@ try {
   const size = 512;
   const png = new PNG({ width: size, height: size });
   
-  // Create a gradient background (purple/indigo theme for "Limidi")
+  // Create a gradient background (purple/indigo theme for "LiMIDI")
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       const idx = (size * y + x) << 2;

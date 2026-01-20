@@ -55,20 +55,20 @@ wss.on("connection", (ws) => {
     }
   });
 
-  ws.send("Limidi Desktop connected");
+  ws.send("LiMIDI Desktop connected");
 });
 
 let midiOutput;
 
-function startLimidiServer(port) {
+function startLiMIDIServer(port) {
   server.listen(port, () => {
     console.log(`Server running on port: ${port}`);
   });
 
-  midiOutput = new Output("Limidi", true);
+  midiOutput = new Output("LiMIDI", true);
 }
 
-function closeLimidiServer() {
+function closeLiMIDIServer() {
   if (midiOutput) {
     midiOutput.close();
     midiOutput = null;
@@ -95,6 +95,6 @@ function sendControlChange(controlIndex, level) {
 }
 
 module.exports = {
-  startLimidiServer,
-  closeLimidiServer,
+  startLiMIDIServer,
+  closeLiMIDIServer,
 };

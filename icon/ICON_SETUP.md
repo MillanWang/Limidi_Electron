@@ -131,7 +131,7 @@ The icons will be automatically included in your distributable packages!
 ## File Structure
 
 ```
-Limidi_Electron/
+LiMIDI_Electron/
 ├── assets/
 │   ├── icon.svg          # Source SVG icon
 │   ├── icon.png          # Optional: root level PNG

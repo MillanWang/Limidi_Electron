@@ -1,9 +1,9 @@
 module.exports = {
   packagerConfig: {
     asar: true,
-    name: "Limidi",
-    executableName: "limidi",
-    appBundleId: "com.limidi.electron",
+    name: "LiMIDI",
+    executableName: "LiMIDI",
+    appBundleId: "com.LiMIDI.electron",
     appVersion: "1.0.0",
     icon: "./assets/icons/icon", // Electron Forge will look for icon.ico (Windows) or icon.icns (macOS)
   },
@@ -12,7 +12,7 @@ module.exports = {
     {
       name: "@electron-forge/maker-squirrel",
       config: {
-        name: "limidi",
+        name: "LiMIDI",
       },
     },
     {
@@ -24,7 +24,7 @@ module.exports = {
       config: {
         options: {
           maintainer: "Millan Wang",
-          homepage: "https://github.com/yourusername/limidi-electron",
+          homepage: "https://github.com/yourusername/LiMIDI-electron",
           icon: "./assets/icons/512x512.png", // Linux requires PNG
         },
       },
@@ -34,7 +34,7 @@ module.exports = {
       config: {
         options: {
           maintainer: "Millan Wang",
-          homepage: "https://github.com/yourusername/limidi-electron",
+          homepage: "https://github.com/yourusername/LiMIDI-electron",
           icon: "./assets/icons/512x512.png", // Linux requires PNG
         },
       },

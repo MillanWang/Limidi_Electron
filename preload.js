@@ -4,7 +4,7 @@ const { replaceElementText } = require("./utils");
 const { encodeIpPort } = require("./ipEncoding");
 const { ipcRenderer } = require("electron");
 
-const { startLimidiServer, closeLimidiServer } = require("./limidiServer");
+const { startLiMIDIServer, closeLiMIDIServer } = require("./LiMIDIServer");
 
 window.restartApp = () => {
   ipcRenderer.send("restart-app");
@@ -36,13 +36,13 @@ const onOnlineHandler = async () => {
   const baseAddress = `${ip}:${port}`;
   const encodedAddress = encodeIpPort(baseAddress);
 
-  startLimidiServer(port);
+  startLiMIDIServer(port);
   replaceElementText(`connection-code`, `Code: ${encodedAddress}`);
   setQrCode(baseAddress);
 };
 
 const onOfflineHandler = async () => {
-  closeLimidiServer();
+  closeLiMIDIServer();
   setQrCode("");
   setOfflineMessage();
 };
