@@ -14,15 +14,13 @@ const createWindow = () => {
       nodeIntegration: true,
       contextIsolation: false,
       preload: path.join(__dirname, "preload.js"),
+      devTools: false,
     },
     autoHideMenuBar: true,
   });
 
   // and load the index.html of the app.
   mainWindow.loadFile("index.html");
-
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
 };
 
 app.whenReady().then(() => {
