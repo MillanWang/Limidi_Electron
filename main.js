@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("node:path");
 
+const devTools = false
+
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -15,13 +17,18 @@ const createWindow = () => {
       nodeIntegration: true,
       contextIsolation: false,
       preload: path.join(__dirname, "preload.js"),
-      devTools: false,
+      devTools,
     },
     autoHideMenuBar: true,
   });
 
   // and load the index.html of the app.
   mainWindow.loadFile("index.html");
+
+  if (devTools) {
+    // Open the DevTools.
+    mainWindow.webContents.openDevTools();
+  }
 };
 
 app.whenReady().then(() => {
