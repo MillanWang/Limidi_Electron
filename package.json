@@ -2,7 +2,7 @@
     "name": "LiMIDI-electron",
     "version": "1.0.0",
     "description": "Hello World!",
-    "main": "main.js",
+    "main": "dist/main.js",
     "author": "Millan Wang",
     "license": "MIT",
     "devDependencies": {
@@ -13,12 +13,20 @@
         "@electron-forge/maker-squirrel": "^6.4.2",
         "@electron-forge/maker-zip": "^6.4.2",
         "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
-        "electron": "^26.2.2"
+        "@types/bonjour": "^3.5.13",
+        "@types/express": "^5.0.6",
+        "@types/node": "^25.4.0",
+        "@types/qrcode": "^1.5.6",
+        "@types/ws": "^8.18.1",
+        "electron": "^26.2.2",
+        "typescript": "^5.9.3"
     },
     "scripts": {
-        "start": "electron-forge start",
-        "package": "electron-forge package",
-        "make": "electron-forge make"
+        "build": "tsc",
+        "postbuild": "cp proto_bundle.js dist/",
+        "start": "npm run build && electron-forge start",
+        "package": "npm run build && electron-forge package",
+        "make": "npm run build && electron-forge make"
     },
     "dependencies": {
         "bonjour": "^3.5.0",

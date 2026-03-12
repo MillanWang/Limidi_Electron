@@ -1,5 +1,7 @@
-// Helper: encode number into custom base
-function encodeNumber(num) {
+const charset = "ABCDEFGHIJKLMNPQRSTUVWYZ123456789";
+const ipPortDelimeter = "X";
+
+function encodeNumber(num: number): string {
   const base = charset.length;
   if (num === 0) return charset[0];
   let encoded = "";
@@ -10,8 +12,7 @@ function encodeNumber(num) {
   return encoded;
 }
 
-// Helper: decode string back into number
-function decodeNumber(str) {
+function decodeNumber(str: string): number {
   const base = charset.length;
   let num = 0;
   for (let i = 0; i < str.length; i++) {
@@ -20,8 +21,7 @@ function decodeNumber(str) {
   return num;
 }
 
-// Main encode
-function encodeIpPort(ipPort) {
+export function encodeIpPort(ipPort: string): string {
   const [ipStr, portStr] = ipPort.split(":");
   const ipParts = ipStr.split(".").map((x) => parseInt(x, 10));
   const port = parseInt(portStr, 10);
@@ -33,18 +33,17 @@ function encodeIpPort(ipPort) {
     (ipParts[0] << 24) | (ipParts[1] << 16) | (ipParts[2] << 8) | ipParts[3];
 
   // Encode separately so port can be arbitrary size
-  const encodedIp = encodeNumber(ipNum >>> 0, charset); // unsigned
-  const encodedPort = encodeNumber(port, charset);
+  const encodedIp = encodeNumber(ipNum >>> 0); // unsigned
+  const encodedPort = encodeNumber(port);
 
   // Separator for decode
   return `${encodedIp}${ipPortDelimeter}${encodedPort}`;
 }
 
-// Main decode
-function decodeIpPort(encoded) {
+export function decodeIpPort(encoded: string): string {
   const [encodedIp, encodedPort] = encoded.split(ipPortDelimeter);
-  const ipNum = decodeNumber(encodedIp, charset);
-  const port = decodeNumber(encodedPort, charset);
+  const ipNum = decodeNumber(encodedIp);
+  const port = decodeNumber(encodedPort);
 
   // Unpack IP
   const ip = [
@@ -56,11 +55,3 @@ function decodeIpPort(encoded) {
 
   return `${ip}:${port}`;
 }
-
-const charset = "ABCDEFGHIJKLMNPQRSTUVWYZ123456789";
-const ipPortDelimeter = "X";
-
-module.exports = {
-  encodeIpPort,
-  decodeIpPort,
-};

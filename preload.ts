@@ -1,16 +1,21 @@
-const QRCode = require("qrcode");
-const { getSubnetIP, findNextAvailablePort } = require("./networkingInfo");
-const { replaceElementText } = require("./utils");
-const { encodeIpPort } = require("./ipEncoding");
-const { ipcRenderer } = require("electron");
+import QRCode from "qrcode";
+import { getSubnetIP, findNextAvailablePort } from "./networkingInfo";
+import { replaceElementText } from "./utils";
+import { encodeIpPort } from "./ipEncoding";
+import { ipcRenderer } from "electron";
+import { startLiMIDIServer, closeLiMIDIServer } from "./LiMIDIServer";
 
-const { startLiMIDIServer, closeLiMIDIServer } = require("./LiMIDIServer");
+declare global {
+  interface Window {
+    restartApp: () => void;
+  }
+}
 
 window.restartApp = () => {
   ipcRenderer.send("restart-app");
 };
 
-const setupRestartButton = () => {
+const setupRestartButton = (): void => {
   const restartButton = document.getElementById("restart-button");
   if (restartButton) {
     restartButton.addEventListener("click", () => {
@@ -21,7 +26,7 @@ const setupRestartButton = () => {
   }
 };
 
-const onContentLoaded = async () => {
+const onContentLoaded = async (): Promise<void> => {
   setupRestartButton();
   const { ip, port } = await tryGetServerInfo();
   if (!ip || !port) {
@@ -31,7 +36,7 @@ const onContentLoaded = async () => {
   onOnlineHandler();
 };
 
-const onOnlineHandler = async () => {
+const onOnlineHandler = async (): Promise<void> => {
   const { ip, port } = await tryGetServerInfo();
   const baseAddress = `${ip}:${port}`;
   const encodedAddress = encodeIpPort(baseAddress);
@@ -41,32 +46,33 @@ const onOnlineHandler = async () => {
   setQrCode(baseAddress);
 };
 
-const onOfflineHandler = async () => {
+const onOfflineHandler = async (): Promise<void> => {
   closeLiMIDIServer();
   setQrCode("");
   setOfflineMessage();
 };
 
-const setOfflineMessage = () => {
+const setOfflineMessage = (): void => {
   replaceElementText(`connection-code`, "No internet connection");
 };
 
-const tryGetServerInfo = async () => {
+const tryGetServerInfo = async (): Promise<{ ip: string | undefined; port: number }> => {
   return {
     ip: getSubnetIP(),
     port: await findNextAvailablePort(4848, 5050),
   };
 };
 
-function setQrCode(codeContent) {
-  const canvas = document.getElementById("canvas");
+function setQrCode(codeContent: string): void {
+  const canvas = document.getElementById("canvas") as HTMLCanvasElement | null;
+  if (!canvas) return;
   if (codeContent) {
     canvas.removeAttribute("hidden");
-    QRCode.toCanvas(canvas, codeContent, function (error) {
+    QRCode.toCanvas(canvas, codeContent, function (error: Error | null | undefined) {
       if (error) replaceElementText("qr-error", "Could not generate QR code");
     });
   } else {
-    canvas.setAttribute("hidden", true);
+    canvas.setAttribute("hidden", "true");
   }
 }
 

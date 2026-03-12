@@ -6,6 +6,11 @@ module.exports = {
     appBundleId: "com.LiMIDI.electron",
     appVersion: "1.0.0",
     icon: "./assets/icons/icon", // Electron Forge will look for icon.ico (Windows) or icon.icns (macOS)
+    ignore: [
+      /\.ts$/,
+      /tsconfig\.json$/,
+      /proto_bundle\.d\.ts$/,
+    ],
   },
   rebuildConfig: {},
   makers: [

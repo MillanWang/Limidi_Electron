@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": ".",
+    "module": "commonjs",
+    "target": "ES2021",
+    "lib": ["ES2021", "DOM"],
+    "strict": true,
+    "allowJs": true,
+    "checkJs": false,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "utils.ts",
+    "ipEncoding.ts",
+    "networkingInfo.ts",
+    "LiMIDIServer.ts",
+    "preload.ts",
+    "main.ts",
+    "proto_bundle.js",
+    "proto_bundle.d.ts"
+  ]
+}

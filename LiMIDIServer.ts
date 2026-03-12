@@ -1,19 +1,18 @@
-const express = require("express");
-const { Output, Input, getInputs, getOutputs } = require("easymidi");
-const { replaceElementText, setElementClass } = require("./utils");
+import express from "express";
+import { Output } from "easymidi";
+import { replaceElementText, setElementClass } from "./utils";
+import * as Proto from "./proto_bundle";
+import http from "http";
+import WebSocket from "ws";
 
-const Proto = require("./proto_bundle"); // or import if using ES modules
 const { WrapperMessage } = Proto;
 
-const http = require("http");
-const WebSocket = require("ws");
-
 const app = express();
-const server = http.createServer(app); // Create HTTP server from Express app
-const wss = new WebSocket.Server({ server }); // Attach WebSocket server to it
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
 
 // Track active connections to prevent UI state collisions
-const activeConnections = new Set();
+const activeConnections = new Set<WebSocket>();
 
 // WebSocket connection handling
 wss.on("connection", (ws) => {
@@ -27,8 +26,8 @@ wss.on("connection", (ws) => {
     setElementClass("status-dot", "disconnected", false);
   }
 
-  ws.on("message", (message) => {
-    const buffer = new Uint8Array(message);
+  ws.on("message", (message: WebSocket.RawData) => {
+    const buffer = new Uint8Array(message as ArrayBuffer);
     const decodedMessage = WrapperMessage.decode(buffer);
 
     if (decodedMessage.midiNote) {
@@ -58,9 +57,9 @@ wss.on("connection", (ws) => {
   ws.send("LiMIDI Desktop connected");
 });
 
-let midiOutput;
+let midiOutput: Output | null = null;
 
-function startLiMIDIServer(port) {
+export function startLiMIDIServer(port: number): void {
   server.listen(port, () => {
     console.log(`Server running on port: ${port}`);
   });
@@ -68,7 +67,7 @@ function startLiMIDIServer(port) {
   midiOutput = new Output("LiMIDI", true);
 }
 
-function closeLiMIDIServer() {
+export function closeLiMIDIServer(): void {
   if (midiOutput) {
     midiOutput.close();
     midiOutput = null;
@@ -78,23 +77,20 @@ function closeLiMIDIServer() {
   }
 }
 
-function sendMidiNote(isNoteOn, noteNumber, velocity) {
-  midiOutput.send(isNoteOn ? "noteon" : "noteoff", {
-    note: noteNumber,
-    velocity: isNoteOn ? velocity : 0,
-    channel: 0,
-  });
+function sendMidiNote(isNoteOn: boolean, noteNumber: number, velocity: number): void {
+  if (!midiOutput) return;
+  if (isNoteOn) {
+    midiOutput.send("noteon", { note: noteNumber, velocity, channel: 0 });
+  } else {
+    midiOutput.send("noteoff", { note: noteNumber, velocity: 0, channel: 0 });
+  }
 }
 
-function sendControlChange(controlIndex, level) {
+function sendControlChange(controlIndex: number, level: number): void {
+  if (!midiOutput) return;
   midiOutput.send("cc", {
     controller: controlIndex,
     value: level,
     channel: 0,
   });
 }
-
-module.exports = {
-  startLiMIDIServer,
-  closeLiMIDIServer,
-};

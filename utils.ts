@@ -1,9 +1,9 @@
-function replaceElementText(selector, text) {
+export function replaceElementText(selector: string, text: string): void {
   const element = document.getElementById(selector);
   if (element) element.innerText = text;
 }
 
-function setElementClass(selector, className, add = true) {
+export function setElementClass(selector: string, className: string, add: boolean = true): void {
   const element = document.getElementById(selector);
   if (element) {
     if (add) {
@@ -13,8 +13,3 @@ function setElementClass(selector, className, add = true) {
     }
   }
 }
-
-module.exports = {
-  replaceElementText,
-  setElementClass,
-};
