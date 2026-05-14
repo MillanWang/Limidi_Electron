@@ -6,19 +6,19 @@
     "author": "Millan Wang",
     "license": "MIT",
     "devDependencies": {
-        "@electron-forge/cli": "^6.4.2",
-        "@electron-forge/maker-deb": "^6.4.2",
+        "@electron-forge/cli": "^7.11.1",
+        "@electron-forge/maker-deb": "^7.11.1",
         "@electron-forge/maker-dmg": "^7.11.1",
-        "@electron-forge/maker-rpm": "^6.4.2",
-        "@electron-forge/maker-squirrel": "^6.4.2",
-        "@electron-forge/maker-zip": "^6.4.2",
-        "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
+        "@electron-forge/maker-rpm": "^7.11.1",
+        "@electron-forge/maker-squirrel": "^7.11.1",
+        "@electron-forge/maker-zip": "^7.11.1",
+        "@electron-forge/plugin-auto-unpack-natives": "^7.11.1",
         "@types/bonjour": "^3.5.13",
         "@types/express": "^5.0.6",
         "@types/node": "^25.4.0",
         "@types/qrcode": "^1.5.6",
         "@types/ws": "^8.18.1",
-        "electron": "^26.2.2",
+        "electron": "^42.0.1",
         "typescript": "^5.9.3"
     },
     "scripts": {
@@ -33,10 +33,16 @@
         "easymidi": "^3.1.0",
         "electron-squirrel-startup": "^1.0.0",
         "express": "^5.1.0",
-        "node-gyp": "^9.4.0",
+        "node-gyp": "^12.3.0",
         "portfinder": "^1.0.32",
         "protobufjs": "^7.5.3",
         "qrcode": "^1.5.3",
         "ws": "^8.18.3"
+    },
+    "overrides": {
+        "@electron/rebuild": "^4.0.4",
+        "tar": "^7.5.15",
+        "@tootallnate/once": "^3.0.1",
+        "tmp": "^0.2.5"
     }
 }
