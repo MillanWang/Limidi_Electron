@@ -41,13 +41,25 @@ const createWindow = (): void => {
       contextIsolation: true,
       preload: path.join(__dirname, "preload.js"),
       devTools,
+      zoomFactor: 1.0,
     },
     autoHideMenuBar: true,
   });
 
+  mainWindow.webContents.on("before-input-event", (event, input) => {
+    if (input.type !== "keyDown") return;
+    if (!(input.control || input.meta)) return;
+    if (["+", "-", "=", "_", "0"].includes(input.key)) {
+      event.preventDefault();
+    }
+  });
+
+  mainWindow.webContents.setVisualZoomLevelLimits(1, 1);
+
   mainWindow.loadFile(path.join(__dirname, "..", "index.html"));
 
   mainWindow.webContents.on("did-finish-load", async () => {
+    mainWindow?.webContents.setZoomFactor(1);
     if (bootPromise) await bootPromise;
     mainWindow?.webContents.send("server-info", getServerInfo());
   });
