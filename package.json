@@ -18,11 +18,11 @@
         "@types/qrcode": "^1.5.6",
         "@types/ws": "^8.18.1",
         "electron": "^42.0.1",
+        "node-gyp": "^12.3.0",
         "typescript": "^5.9.3"
     },
     "scripts": {
         "build": "tsc",
-        "postbuild": "cp proto_bundle.js dist/",
         "start": "npm run build && electron-forge start",
         "package": "npm run build && electron-forge package",
         "make": "npm run build && electron-forge make"
@@ -31,7 +31,6 @@
         "easymidi": "^3.1.0",
         "electron-squirrel-startup": "^1.0.0",
         "express": "^5.1.0",
-        "node-gyp": "^12.3.0",
         "portfinder": "^1.0.32",
         "protobufjs": "^7.5.3",
         "qrcode": "^1.5.3",

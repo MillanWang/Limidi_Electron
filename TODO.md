@@ -45,18 +45,3 @@ for what is conceptually "refresh the server / regenerate the QR".
   QR (the server is already re-startable after the #11 fix).
 - Rename the button to "Refresh connection" so the user knows nothing
   destructive is happening.
-
-## Smaller stuff
-
-- `tsconfig.json` lists each source file in `include`. Replace with
-  `"include": ["**/*.ts", "proto_bundle.js"]` plus an `exclude` for
-  `node_modules`, `dist`, `out`.
-- The `postbuild` step copies `proto_bundle.js` into `dist/`. Since the
-  file is already in `tsconfig.json > include`, `tsc` will emit it
-  directly — drop the `cp` step.
-- `node-gyp` is in `dependencies` but it is only needed at build time.
-  Move it to `devDependencies`.
-- `easymidi` is a native module. Confirm that
-  `out/<platform>/LiMIDI.app/Contents/Resources/app.asar.unpacked/node_modules/easymidi`
-  contains a rebuilt binary for the target Electron version (the
-  `plugin-auto-unpack-natives` plugin should handle this).

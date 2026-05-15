@@ -13,15 +13,6 @@
     "resolveJsonModule": true,
     "skipLibCheck": true
   },
-  "include": [
-    "ipEncoding.ts",
-    "networkingInfo.ts",
-    "LiMIDIServer.ts",
-    "preload.ts",
-    "renderer.ts",
-    "main.ts",
-    "globals.d.ts",
-    "proto_bundle.js",
-    "proto_bundle.d.ts"
-  ]
+  "include": ["**/*.ts", "proto_bundle.js"],
+  "exclude": ["node_modules", "dist", "out"]
 }
