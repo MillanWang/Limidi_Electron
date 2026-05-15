@@ -25,17 +25,6 @@ arm64 only, so Intel Mac users get nothing.
 - Add `"win32"` and `"linux"` to the zip maker's `platforms` array so
   Windows / Linux users have a portable artifact too.
 
-## 8. Pick the right network interface (review #8)
-
-`getSubnetIP` in `networkingInfo.ts` returns the first non-internal IPv4
-address. On most laptops that's a Docker / VPN / `utun` interface, not the
-Wi-Fi the phone is on, so the QR code is unscannable.
-
-- Prefer addresses in the private ranges `192.168.`, `10.`, `172.16-31.`.
-- De-prioritise interfaces whose names start with `utun`, `bridge`,
-  `vmnet`, `vbox`, `docker`, `tailscale`, `wg`.
-- Stretch: surface all candidates in the UI and let the user pick.
-
 ## 14. Lighten the "Restart" button (review #14)
 
 The button currently fires `app.relaunch() + app.exit(0)`, which is heavy
