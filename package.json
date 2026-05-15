@@ -13,7 +13,6 @@
         "@electron-forge/maker-squirrel": "^7.11.1",
         "@electron-forge/maker-zip": "^7.11.1",
         "@electron-forge/plugin-auto-unpack-natives": "^7.11.1",
-        "@types/bonjour": "^3.5.13",
         "@types/express": "^5.0.6",
         "@types/node": "^25.4.0",
         "@types/qrcode": "^1.5.6",
@@ -29,7 +28,6 @@
         "make": "npm run build && electron-forge make"
     },
     "dependencies": {
-        "bonjour": "^3.5.0",
         "easymidi": "^3.1.0",
         "electron-squirrel-startup": "^1.0.0",
         "express": "^5.1.0",

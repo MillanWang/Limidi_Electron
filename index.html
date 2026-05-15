@@ -1,14 +1,14 @@
 <!doctype html>
 <html>
-  <!-- <script src="./preload.js"></script> -->
-
   <head>
     <meta charset="UTF-8" />
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    ˝
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:"
+    />
     <link rel="stylesheet" type="text/css" href="styles.css" />
     <title>LiMIDI</title>
+    <script src="dist/renderer.js" defer></script>
   </head>
 
   <body>
@@ -22,15 +22,16 @@
       <p class="text">
         <span id="connection-code"></span>
       </p>
-      <canvas id="canvas"></canvas>
+      <img id="qr" alt="Pairing QR code" hidden />
       <span class="text" id="qr-error"></span>
 
       <div class="connection-indicator">
-        <span class="status-dot" id="status-dot"></span>
+        <span class="status-dot disconnected" id="status-dot"></span>
         <span id="connection-status">Waiting for connection...</span>
       </div>
 
       <button id="restart-button" class="restart-button">Restart</button>
     </div>
+    <span id="version" class="version-label"></span>
   </body>
 </html>

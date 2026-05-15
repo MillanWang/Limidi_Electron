@@ -15,9 +15,9 @@ export function getSubnetIP(): string | undefined {
   return undefined;
 }
 
-export function findNextAvailablePort(startingPort: number, maxAttempts: number): Promise<number> {
+export function findNextAvailablePort(startingPort: number, stopPort: number): Promise<number> {
   return portfinder.getPortPromise({
     port: startingPort,
-    stopPort: maxAttempts,
+    stopPort,
   });
 }

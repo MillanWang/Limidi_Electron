@@ -1,65 +1,61 @@
 import express from "express";
 import { Output } from "easymidi";
-import { replaceElementText, setElementClass } from "./utils";
 import * as Proto from "./proto_bundle";
 import http from "http";
+import { EventEmitter } from "events";
 import WebSocket from "ws";
 
 const { WrapperMessage } = Proto;
 
-const app = express();
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+export type ConnectionState = "connected" | "disconnected";
 
-// Track active connections to prevent UI state collisions
+export const serverEvents = new EventEmitter();
+
+let server: http.Server | null = null;
+let wss: WebSocket.Server | null = null;
+let midiOutput: Output | null = null;
 const activeConnections = new Set<WebSocket>();
 
-// WebSocket connection handling
-wss.on("connection", (ws) => {
-  // Add this connection to the active set
-  activeConnections.add(ws);
-
-  // Update UI to Connected if this is the first connection
-  if (activeConnections.size === 1) {
-    replaceElementText("connection-status", "Connected");
-    setElementClass("status-dot", "connected", true);
-    setElementClass("status-dot", "disconnected", false);
-  }
-
-  ws.on("message", (message: WebSocket.RawData) => {
-    const buffer = new Uint8Array(message as ArrayBuffer);
-    const decodedMessage = WrapperMessage.decode(buffer);
-
-    if (decodedMessage.midiNote) {
-      const { isNoteOn, noteNumber, velocity } = decodedMessage.midiNote;
-      sendMidiNote(isNoteOn, noteNumber, velocity);
-    } else if (decodedMessage.controlChange) {
-      const { controlIndex, level } = decodedMessage.controlChange;
-      sendControlChange(controlIndex, level);
-    }
-
-    ws.send(`Echo: ${message}`);
-  });
-
-  ws.on("close", () => {
-    console.log("WebSocket connection closed");
-    // Remove this connection from the active set
-    activeConnections.delete(ws);
-
-    // Only set UI to Disconnected if this was the last active connection
-    if (activeConnections.size === 0) {
-      replaceElementText("connection-status", "Disconnected");
-      setElementClass("status-dot", "connected", false);
-      setElementClass("status-dot", "disconnected", true);
-    }
-  });
-
-  ws.send("LiMIDI Desktop connected");
-});
-
-let midiOutput: Output | null = null;
+function emitState(): void {
+  const state: ConnectionState = activeConnections.size > 0 ? "connected" : "disconnected";
+  serverEvents.emit("state", state);
+}
 
 export function startLiMIDIServer(port: number): void {
+  const app = express();
+  server = http.createServer(app);
+  wss = new WebSocket.Server({ server });
+
+  wss.on("connection", (ws) => {
+    activeConnections.add(ws);
+    if (activeConnections.size === 1) emitState();
+
+    ws.on("message", (message: WebSocket.RawData) => {
+      try {
+        const buffer = new Uint8Array(message as ArrayBuffer);
+        const decodedMessage = WrapperMessage.decode(buffer);
+
+        if (decodedMessage.midiNote) {
+          const { isNoteOn, noteNumber, velocity } = decodedMessage.midiNote;
+          sendMidiNote(isNoteOn, noteNumber, velocity);
+        } else if (decodedMessage.controlChange) {
+          const { controlIndex, level } = decodedMessage.controlChange;
+          sendControlChange(controlIndex, level);
+        }
+      } catch (err) {
+        console.error("Dropping malformed message:", err);
+        ws.close(1003, "malformed message");
+      }
+    });
+
+    ws.on("close", () => {
+      activeConnections.delete(ws);
+      if (activeConnections.size === 0) emitState();
+    });
+
+    ws.send("LiMIDI Desktop connected");
+  });
+
   server.listen(port, () => {
     console.log(`Server running on port: ${port}`);
   });
@@ -68,13 +64,22 @@ export function startLiMIDIServer(port: number): void {
 }
 
 export function closeLiMIDIServer(): void {
+  for (const ws of activeConnections) ws.terminate();
+  activeConnections.clear();
+
   if (midiOutput) {
     midiOutput.close();
     midiOutput = null;
   }
+  if (wss) {
+    wss.close();
+    wss = null;
+  }
   if (server) {
     server.close();
+    server = null;
   }
+  emitState();
 }
 
 function sendMidiNote(isNoteOn: boolean, noteNumber: number, velocity: number): void {

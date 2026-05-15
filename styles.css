@@ -105,13 +105,15 @@ body {
   align-items: center;
   text-align: center;
   font-family: Arial, Helvetica, sans-serif;
-  padding: 16px;
+  padding: 24px 20px;
+  gap: 1.25rem;
+  box-sizing: border-box;
   animation: fade-up 600ms ease both;
 }
 
 .text {
   color: #eeeeee;
-  margin: 8px;
+  margin: 0;
 }
 
 h1.text {
@@ -121,11 +123,34 @@ h1.text {
   color: #ffffff;
 }
 
-#canvas {
+#qr {
   border-radius: 12px;
   background-color: #ffffff;
   padding: 8px;
   box-shadow: 0 10px 30px -10px rgba(168, 85, 247, 0.4);
+  width: 140px;
+  height: 140px;
+  -webkit-user-drag: none;
+  user-select: none;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+#qr-error:empty {
+  display: none;
+}
+
+.version-label {
+  position: fixed;
+  bottom: 8px;
+  right: 10px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 0.04em;
+  z-index: 2;
+  pointer-events: none;
 }
 
 /* Connection status indicator */
@@ -134,7 +159,7 @@ h1.text {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin: 16px 0;
+  margin: 0;
   padding: 8px 16px;
   background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -165,6 +190,7 @@ h1.text {
 }
 
 .restart-button {
+  margin: 0;
   padding: 8px 18px;
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.15);

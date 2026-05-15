@@ -14,12 +14,13 @@
     "skipLibCheck": true
   },
   "include": [
-    "utils.ts",
     "ipEncoding.ts",
     "networkingInfo.ts",
     "LiMIDIServer.ts",
     "preload.ts",
+    "renderer.ts",
     "main.ts",
+    "globals.d.ts",
     "proto_bundle.js",
     "proto_bundle.d.ts"
   ]
