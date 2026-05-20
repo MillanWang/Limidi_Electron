@@ -5,6 +5,13 @@ runs a small server on your local network, creates a virtual MIDI output
 named `LiMIDI`, and shows a QR code that the LiMIDI phone app scans to
 pair.
 
+## Installing (macOS)
+
+1. Download `LiMIDI.dmg` from the latest release.
+2. Open the DMG and drag **LiMIDI** to the **Applications** folder.
+3. Open Applications and double-click LiMIDI. Gatekeeper verifies the
+   app's notarization on first launch and remembers the decision.
+
 ## Using the app
 
 1. Connect this computer and your phone to the **same Wi-Fi network**.
@@ -21,28 +28,18 @@ On first launch, macOS / Windows will ask whether to allow incoming
 network connections. **Allow it** — the phone needs to reach the desktop
 over the LAN. The app listens on a port in the range 4848-5050.
 
-## macOS: "LiMIDI is damaged and can't be opened"
-
-The downloadable `.zip` is not (yet) notarized. macOS sets the quarantine
-bit on anything pulled out of a zip from a browser, and Gatekeeper
-refuses to launch unsigned apps from quarantine.
-
-Move the app into `/Applications`, then run:
-
-```sh
-xattr -dr com.apple.quarantine /Applications/LiMIDI.app
-```
-
-After that, double-clicking will work.
-
 ## Development
 
 ```sh
 npm install
 npm start          # build + launch via electron-forge
-npm run package    # bundle the .app without making installers
-npm run make       # build the .zip / .dmg / installers in out/make
+npm run package    # bundle the signed .app (no installers)
+npm run make       # produce distributable artifacts in out/make/
 ```
+
+`npm run make` produces both the **DMG** (signed + notarized, the public
+macOS artifact) and a `.zip` (mostly for CI / direct-download workflows).
+End users get the DMG.
 
 Source layout:
 

@@ -26,6 +26,12 @@ function applyServerInfo(info: ServerInfo): void {
   setText("version", `v${info.version}`);
   setText("qr-error", "");
 
+  if (info.error) {
+    setText("connection-code", info.error);
+    setQrSrc("");
+    return;
+  }
+
   if (!info.code || !info.qrDataUrl) {
     setText("connection-code", "No network connection");
     setQrSrc("");

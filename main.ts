@@ -17,6 +17,7 @@ interface ServerInfo {
   port?: number;
   code?: string;
   qrDataUrl?: string;
+  error?: string;
   version: string;
 }
 
@@ -24,8 +25,25 @@ let mainWindow: BrowserWindow | null = null;
 let currentIp: string | undefined;
 let currentPort: number | undefined;
 let currentQrDataUrl: string | undefined;
+let currentError: string | undefined;
 let bootPromise: Promise<void> | null = null;
 let networkPollTimer: NodeJS.Timeout | null = null;
+
+// A second launch should focus the existing window rather than spin up a
+// duplicate process — two instances would each register a virtual MIDI
+// output named "LiMIDI" and DAWs would show two indistinguishable ports.
+// Store the lock result so whenReady can bail out *before* opening a
+// window (app.quit() alone doesn't prevent the ready event from firing).
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
+if (!gotSingleInstanceLock) {
+  app.quit();
+}
+
+app.on("second-instance", () => {
+  if (!mainWindow) return;
+  if (mainWindow.isMinimized()) mainWindow.restore();
+  mainWindow.focus();
+});
 
 const createWindow = (): void => {
   mainWindow = new BrowserWindow({
@@ -80,23 +98,43 @@ function generateQrDataUrl(content: string): Promise<string> {
 
 async function bootServer(): Promise<void> {
   closeLiMIDIServer();
+  currentIp = undefined;
+  currentPort = undefined;
+  currentQrDataUrl = undefined;
+  currentError = undefined;
+
   const ip = getSubnetIP();
   if (!ip) {
-    currentIp = undefined;
-    currentPort = undefined;
-    currentQrDataUrl = undefined;
-  } else {
-    const port = await findNextAvailablePort(4848, 5050);
-    startLiMIDIServer(port);
-    currentIp = ip;
-    currentPort = port;
-    try {
-      currentQrDataUrl = await generateQrDataUrl(`${ip}:${port}`);
-    } catch (err) {
-      console.error("QR generation failed:", err);
-      currentQrDataUrl = undefined;
-    }
+    mainWindow?.webContents.send("server-info", getServerInfo());
+    return;
   }
+
+  let port: number;
+  try {
+    port = await findNextAvailablePort(4848, 5050);
+  } catch (err) {
+    // portfinder rejects when every port in the range is taken (another
+    // LiMIDI is running, or unrelated apps are squatting 4848–5050).
+    // Without this catch the rejection bubbles up unhandled and the UI
+    // gets stuck showing the generic "No network connection" state.
+    console.error("Port allocation failed:", err);
+    currentError =
+      "No available port in 4848–5050. Close conflicting apps and Restart.";
+    mainWindow?.webContents.send("server-info", getServerInfo());
+    return;
+  }
+
+  startLiMIDIServer(port);
+  currentIp = ip;
+  currentPort = port;
+
+  try {
+    currentQrDataUrl = await generateQrDataUrl(`${ip}:${port}`);
+  } catch (err) {
+    console.error("QR generation failed:", err);
+    currentQrDataUrl = undefined;
+  }
+
   mainWindow?.webContents.send("server-info", getServerInfo());
 }
 
@@ -108,6 +146,7 @@ function getServerInfo(): ServerInfo {
     port: currentPort,
     code,
     qrDataUrl: currentQrDataUrl,
+    error: currentError,
     version: app.getVersion(),
   };
 }
@@ -123,6 +162,10 @@ function startNetworkPoll(): void {
 }
 
 app.whenReady().then(async () => {
+  // app.quit() above is async; the ready event can still fire on the
+  // losing instance and would flash a window if we didn't bail here.
+  if (!gotSingleInstanceLock) return;
+
   createWindow();
   bootPromise = bootServer();
   await bootPromise;

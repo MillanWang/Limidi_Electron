@@ -3,6 +3,7 @@ interface ServerInfo {
   port?: number;
   code?: string;
   qrDataUrl?: string;
+  error?: string;
   version: string;
 }
 
