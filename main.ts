@@ -124,7 +124,7 @@ async function bootServer(): Promise<void> {
     return;
   }
 
-  startLiMIDIServer(port);
+  startLiMIDIServer(port, ip);
   currentIp = ip;
   currentPort = port;
 
